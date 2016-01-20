@@ -28,6 +28,7 @@ class PiplRequest
   # Sends the request
   def send_request(person)
     response = Pipl::client.search person: person, pretty: true, hide_sponsored: true, show_sources: "all"
+    binding.pry
   end
 
   # Process the output
@@ -74,7 +75,8 @@ class PiplRequest
   # Generate the name
   def gen_name(data_item)
     return Pipl::Name.new(first: clean_name(get_field_content(data_item, :name, :first)),
-                   last: clean_name(get_field_content(data_item, :name, :last)))
+                          last: clean_name(get_field_content(data_item, :name, :last)),
+                          raw: clean_name(get_field_content(data_item, :name, :raw)))
   end
 
   # Generate the URL
@@ -110,5 +112,3 @@ class PiplRequest
     end
   end
 end
-
-# TODO: Test with Indeed too!
