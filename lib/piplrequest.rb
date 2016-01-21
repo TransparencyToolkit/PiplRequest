@@ -68,14 +68,23 @@ class PiplRequest
 
   # Clean name fields to not include extra info
   def clean_name(name)
-    return name.split("(").first.split("/").first.strip if name
+    without_parens = name.gsub(/\((?:[^()]+)\)/, "").strip.lstrip
+    without_slash = without_parens.split("/").first.strip
+    without_numerals = without_slash.gsub(/\s(?:I|V)+(?:\s|$)/, "").strip.lstrip
+  end
+
+  # Get the name content and clean it if it exists
+  def get_clean_name_content(data_item, type)
+    name = get_field_content(data_item, :name, type)
+    return clean_name(name) if name
   end
 
   # Generate the name
   def gen_name(data_item)
-    return Pipl::Name.new(first: clean_name(get_field_content(data_item, :name, :first)),
-                          last: clean_name(get_field_content(data_item, :name, :last)),
-                          raw: clean_name(get_field_content(data_item, :name, :raw)))
+    return Pipl::Name.new(first: get_clean_name_content(data_item, :first),
+                          last: get_clean_name_content(data_item, :last),
+                          raw: get_clean_name_content(data_item, :raw)
+                         )
   end
 
   # Generate the URL
