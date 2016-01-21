@@ -28,7 +28,6 @@ class PiplRequest
   # Sends the request
   def send_request(person)
     response = Pipl::client.search person: person, pretty: true, hide_sponsored: true, show_sources: "all"
-    binding.pry
   end
 
   # Process the output

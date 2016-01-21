@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'piplrequest'
-  s.version     = '0.0.2'
-  s.date        = '2016-01-20'
+  s.version     = '0.0.3'
+  s.date        = '2016-01-21'
   s.summary     = 'Gets data from Pipl'
   s.description = 'Gets data from Pipl'
   s.authors     = ['M. C. McGrath']
