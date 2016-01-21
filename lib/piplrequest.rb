@@ -22,7 +22,10 @@ class PiplRequest
 
   # Gets the data
   def get_data(data_item)
-    return process_output(send_request(build_person(data_item)))
+    begin
+      return process_output(send_request(build_person(data_item)))
+    rescue
+    end
   end
 
   # Sends the request
