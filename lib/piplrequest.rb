@@ -3,9 +3,10 @@ require 'pry'
 require 'geocoder'
 
 class PiplRequest
-  def initialize(api_key, fields_to_use)
+  def initialize(api_key, fields_to_use, geocoder_api_key)
     @api_key = api_key
     @fields_to_use = fields_to_use
+    Geocoder.configure(:api_key => geocoder_api_key)
     configure_pipl
   end
 
