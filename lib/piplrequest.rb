@@ -87,14 +87,30 @@ class PiplRequest
   def gen_name(data_item)
     return Pipl::Name.new(first: get_clean_name_content(data_item, :first),
                           last: get_clean_name_content(data_item, :last),
+                          middle: get_clean_name_content(data_item, :middle),
                           raw: get_clean_name_content(data_item, :raw)
                          )
   end
 
+  # Get the location
+  def gen_location(data_item)
+    city = get_field_content(data_item, :address, :city)
+    state = get_field_content(data_item, :address, :state)
+    country = get_field_content(data_item, :address, :country)
+
+    # Gen string for location
+    location_string = ""
+    location_string += city + ", "if city
+    location_string += state + ", " if state
+    location_string += country if country
+
+    location = geocode(location_string)
+  end
+
   # Generate the URL
   def gen_url(data_item)
-    Pipl::Url.new(url: get_field_content(data_item, :url, :url),
-                  domain: @fields_to_use[:url][:domain])
+    url = get_field_content(data_item, :url, :url)
+    Pipl::Url.new(url: url, domain: @fields_to_use[:url][:domain]) if url
   end
 
   # Builds person model
@@ -102,20 +118,20 @@ class PiplRequest
     # Initial gen and required fields
     person = Pipl::Person.new
     person.add_field(gen_name(data_item))
-
-    # Optional fields- only run if there
-    location = geocode(get_field_content(data_item, :address, :city))
-    person.add_field(location) if location
     
+    # Optional fields- only run if there
+    location = gen_location(data_item)
+    person.add_field(location) if location
+   
     url = gen_url(data_item)
     person.add_field(url) if url
-    
+  
     return person
   end
 
   # Get content that should be put in field based on fields_to_use mapping
   def get_field_content(data_item, field_category, field_name)
-    data_field = @fields_to_use[field_category][field_name]
+    data_field = @fields_to_use[field_category][field_name] if @fields_to_use[field_category]
     
     # Merge multiple fields if provided
     if data_field.is_a?(Array)
